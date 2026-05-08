@@ -27,22 +27,6 @@ $(document).ready(function () {
             {
                 data: "tweet",
             },
-
-            {
-                data: "sentiment",
-                className: "text-center",
-                render: function (data) {
-                    if (data == "positif") {
-                        return `<span class="badge bg-label-success">Positif</span>`;
-                    }
-
-                    if (data == "negatif") {
-                        return `<span class="badge bg-label-danger">Negatif</span>`;
-                    }
-
-                    return `<span class="badge bg-label-secondary">Netral</span>`;
-                },
-            },
         ],
     });
 

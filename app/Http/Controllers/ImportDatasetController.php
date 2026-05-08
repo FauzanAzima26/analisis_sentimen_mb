@@ -24,7 +24,7 @@ class ImportDatasetController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:csv,xlsx,xls'
+            'file' => 'required|file'
         ]);
 
         Excel::import(

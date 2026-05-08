@@ -28,15 +28,6 @@ $(document).ready(function () {
 
             {
                 data: "term",
-            },
-
-            {
-                data: "tf",
-                className: "text-center",
-            },
-
-            {
-                data: "idf",
                 className: "text-center",
             },
 

@@ -37,22 +37,12 @@
                             </th>
 
                             {{-- TERM --}}
-                            <th width="35%">
+                            <th class="text-center">
                                 TERM
                             </th>
 
-                            {{-- TF --}}
-                            <th width="15%" class="text-center">
-                                TF
-                            </th>
-
-                            {{-- IDF --}}
-                            <th width="15%" class="text-center">
-                                IDF
-                            </th>
-
                             {{-- TF-IDF --}}
-                            <th width="15%" class="text-center">
+                            <th class="text-center">
                                 TF-IDF
                             </th>
 

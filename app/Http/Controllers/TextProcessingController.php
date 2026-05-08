@@ -26,44 +26,91 @@ class TextProcessingController extends Controller
         return response()->json($data);
     }
 
-    public function run()
+    public function reset()
     {
-        ImportDataset::chunk(100, function ($datasets) {
-
-            foreach ($datasets as $data) {
-
-                // skip kalau sudah diproses
-                if ($data->sentiment && $data->clean_tweet) {
-                    continue;
-                }
-
-                try {
-
-                    $response = Http::timeout(15)->post(
-                        'http://127.0.0.1:5000/predict',
-                        [
-                            'text' => $data->tweet
-                        ]
-                    );
-
-                    if ($response->failed()) {
-                        continue;
-                    }
-
-                    $result = $response->json();
-
-                    $data->clean_tweet = $result['clean_text'] ?? null;
-                    $data->sentiment = $result['sentiment'] ?? null;
-
-                    $data->save();
-                } catch (\Exception $e) {
-                    continue;
-                }
-            }
-        });
+        ImportDataset::truncate();
 
         return response()->json([
-            'success' => true
+            'message' => 'Semua data berhasil dihapus'
+        ]);
+    }
+
+    public function processAll()
+    {
+        // =========================
+        // 1. AMBIL DATA RAW
+        // =========================
+        $datasets = ImportDataset::whereNotNull('tweet')->get();
+
+        if ($datasets->isEmpty()) {
+            return response()->json([
+                'message' => 'Data kosong'
+            ]);
+        }
+
+        // =========================
+        // 2. PREPROCESSING + SIMPAN
+        // =========================
+        foreach ($datasets as $data) {
+
+            try {
+
+                $response = Http::timeout(30)->post(
+                    'http://127.0.0.1:5000/preprocess',
+                    [
+                        'text' => $data->tweet
+                    ]
+                );
+
+                if ($response->failed()) {
+                    continue;
+                }
+
+                $result = $response->json();
+
+                $data->clean_tweet = $result['clean_text'] ?? null;
+
+                $data->save();
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        // =========================
+        // 3. AMBIL CLEAN TEXT
+        // =========================
+        $texts = ImportDataset::whereNotNull('clean_tweet')
+            ->pluck('clean_tweet')
+            ->toArray();
+
+        if (empty($texts)) {
+            return response()->json([
+                'message' => 'Tidak ada data clean_tweet'
+            ]);
+        }
+
+        // =========================
+        // 4. HITUNG TF-IDF (FASTAPI)
+        // =========================
+        $tfidfResponse = Http::timeout(60)->post(
+            'http://127.0.0.1:5000/tfidf',
+            [
+                'texts' => $texts
+            ]
+        );
+
+        if ($tfidfResponse->failed()) {
+            return response()->json([
+                'message' => 'Gagal hitung TF-IDF'
+            ]);
+        }
+
+        // =========================
+        // 5. RETURN HASIL
+        // =========================
+        return response()->json([
+            'message' => 'Processing selesai',
+            'tfidf' => $tfidfResponse->json()
         ]);
     }
 

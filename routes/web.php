@@ -22,13 +22,17 @@ Route::get('/text-processing', [TextProcessingController::class, 'index'])
     ->name('text-processing.index');
 Route::get('/text-processing/data', [TextProcessingController::class, 'data'])
     ->name('text-processing.data');
-Route::post('/run-preprocessing', [TextProcessingController::class, 'run'])
-    ->name('run.preprocessing');
+Route::post('/text-processing/process-all', [TextProcessingController::class, 'processAll'])
+    ->name('text-processing.processAll');
+Route::delete('/preprocessing/reset', [TextProcessingController::class, 'reset'])
+    ->name('preprocessing.reset');
 
 Route::get('/tfidf', [TFIDFController::class, 'index'])
     ->name('tfidf.index');
 Route::get('/tfidf/data', [TFIDFController::class, 'data'])
     ->name('tfidf.data');
+Route::post('/tfidf/process', [TFIDFController::class, 'tfidf'])
+    ->name('tfidf.process');
 
 Route::get('/model-performance', [ModelPerformanceController::class, 'index'])
     ->name('model-performance.index');

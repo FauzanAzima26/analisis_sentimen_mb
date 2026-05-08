@@ -73,10 +73,6 @@
                                 TWEET
                             </th>
 
-                            <th width="15%" class="text-center">
-                                SENTIMEN
-                            </th>
-
                         </tr>
 
                     </thead>

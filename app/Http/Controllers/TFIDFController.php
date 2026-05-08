@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ImportDataset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class TFIDFController extends Controller
 {
@@ -12,17 +13,51 @@ class TFIDFController extends Controller
      */
     public function index()
     {
-        return view('td-idf');
+        return view('tf-idf');
     }
 
     public function data()
     {
-        $data = ImportDataset::select(
-            'tweet',
-            'tweet_preprocessing'
-        )->latest()->get();
+        $response = Http::timeout(60)->post(
+            'http://127.0.0.1:5000/tfidf',
+            [
+                'texts' => ImportDataset::whereNotNull('clean_tweet')
+                    ->pluck('clean_tweet')
+                    ->toArray()
+            ]
+        );
 
-        return response()->json($data);
+        if ($response->failed()) {
+            return response()->json([
+                'error' => $response->body()
+            ]);
+        }
+
+        return response()->json(
+            $response->json()['data'] ?? []
+        );
+    }
+
+    public function tfidf()
+    {
+        $texts = ImportDataset::whereNotNull('clean_tweet')
+            ->pluck('clean_tweet')
+            ->toArray();
+
+        if (empty($texts)) {
+            return response()->json([]);
+        }
+
+        $response = Http::post(
+            'http://127.0.0.1:5000/tfidf',
+            [
+                'texts' => $texts
+            ]
+        );
+
+        return response()->json(
+            $response->json()['data']
+        );
     }
 
     /**

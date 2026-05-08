@@ -5,6 +5,9 @@ $(document).ready(function () {
 
     let processUrl = table.data("process-url");
 
+    // URL RESET
+    let resetUrl = table.data("reset-url");
+
     let dataTable = table.DataTable({
         processing: true,
         responsive: true,
@@ -21,6 +24,7 @@ $(document).ready(function () {
             {
                 data: null,
                 className: "text-center",
+
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 },
@@ -43,47 +47,86 @@ $(document).ready(function () {
         },
     });
 
+    // =========================================
+    // PREPROCESSING
+    // =========================================
+
     $("#btnPreprocessing").click(function () {
+        $.ajax({
+            url: "/text-processing/process-all",
+            type: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Processing...",
+                    didOpen: () => Swal.showLoading(),
+                });
+            },
+
+            success: function (res) {
+                console.log(res);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Selesai",
+                    text: res.message,
+                });
+
+                dataTable.ajax.reload();
+            },
+        });
+    });
+
+    // =========================================
+    // RESET DATA
+    // =========================================
+
+    $("#btnReset").click(function () {
         Swal.fire({
-            title: "Jalankan preprocessing?",
-            text: "Semua data akan diproses",
-            icon: "question",
+            title: "Hapus semua data?",
+
+            text: "Data preprocessing akan dihapus permanen",
+
+            icon: "warning",
+
             showCancelButton: true,
-            confirmButtonText: "Ya, proses",
+
+            confirmButtonColor: "#d33",
+
+            confirmButtonText: "Ya, hapus",
+
             cancelButtonText: "Batal",
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: processUrl,
+                    url: resetUrl,
 
-                    type: "POST",
+                    type: "DELETE",
 
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                     },
 
                     beforeSend: function () {
-                        $("#btnPreprocessing").prop("disabled", true).html(`
-                            <span class="spinner-border spinner-border-sm me-1"></span>
-                            Processing...
-                        `);
-
-                        Swal.fire({
-                            title: "Processing...",
-                            text: "Sedang menjalankan preprocessing",
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            },
-                        });
+                        $("#btnReset").prop("disabled", true).html(`
+                                <span class="spinner-border spinner-border-sm me-1"></span>
+                                Resetting...
+                            `);
                     },
 
                     success: function (response) {
                         Swal.fire({
                             icon: "success",
+
                             title: "Berhasil",
+
                             text: response.message,
+
                             timer: 2000,
+
                             showConfirmButton: false,
                         });
 
@@ -95,16 +138,18 @@ $(document).ready(function () {
 
                         Swal.fire({
                             icon: "error",
+
                             title: "Gagal",
-                            text: "Preprocessing gagal",
+
+                            text: "Reset data gagal",
                         });
                     },
 
                     complete: function () {
-                        $("#btnPreprocessing").prop("disabled", false).html(`
-                            <i class="ti ti-player-play me-1"></i>
-                            Run Preprocessing
-                        `);
+                        $("#btnReset").prop("disabled", false).html(`
+                                <i class="ti ti-trash me-1"></i>
+                                Reset Data
+                            `);
                     },
                 });
             }
