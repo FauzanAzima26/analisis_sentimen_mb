@@ -20,8 +20,8 @@
 
             {{-- FORM --}}
             <div class="card-body">
-
-                <form id="formImport">
+                <div id="alertMessage"></div>
+                <form id="formImport" enctype="multipart/form-data">
 
                     @csrf
 
@@ -34,8 +34,10 @@
                                 File CSV
                             </label>
 
-                            <input type="file" name="file" class="form-control" accept=".csv" required>
-
+                            <input type="file" name="file" class="form-control" accept=".csv,.xlsx,.xls" required>
+                            <small class="text-muted">
+                                Format file yang didukung: CSV, XLSX, XLS
+                            </small>
                         </div>
 
                         {{-- BUTTON --}}
@@ -55,7 +57,7 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive text-nowrap px-3 pb-3">
+            <div class="table-responsive px-3 pb-3">
 
                 <table id="ImportDataset" class="table table-bordered" data-url="{{ route('dataset.data') }}">
 
@@ -67,7 +69,7 @@
                                 NO
                             </th>
 
-                            <th>
+                            <th width="40%">
                                 TWEET
                             </th>
 

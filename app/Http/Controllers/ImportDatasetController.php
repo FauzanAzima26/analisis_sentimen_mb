@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\DatasetImport;
 use App\Models\ImportDataset;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ImportDatasetController extends Controller
 {
@@ -14,31 +16,21 @@ class ImportDatasetController extends Controller
 
     public function data()
     {
-        $data = ImportDataset::latest()->get();
-
-        return response()->json($data);
+        return response()->json(
+            ImportDataset::latest()->get()
+        );
     }
 
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:csv,txt'
+            'file' => 'required|mimes:csv,xlsx,xls'
         ]);
 
-        $file = fopen($request->file('file'), 'r');
-
-        // Skip header CSV
-        fgetcsv($file);
-
-        while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
-
-            ImportDataset::create([
-                'tweet' => $row[0],
-                'sentimen' => $row[1] ?? null
-            ]);
-        }
-
-        fclose($file);
+        Excel::import(
+            new DatasetImport,
+            $request->file('file')
+        );
 
         return response()->json([
             'success' => true,

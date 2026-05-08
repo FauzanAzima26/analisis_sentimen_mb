@@ -10,7 +10,7 @@ class ImportDataset extends Model
 
     protected $fillable = [
         'tweet',
-        'sentimen',
-        'tweet_preprocessing'
+        'sentiment',
+        'clean_tweet'
     ];
 }

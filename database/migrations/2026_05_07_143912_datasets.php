@@ -15,8 +15,8 @@ return new class extends Migration
 
             $table->id();
             $table->longText('tweet');
-            $table->string('sentimen')->nullable();
-            $table->longText('tweet_preprocessing')->nullable();
+            $table->string('sentiment')->nullable();
+            $table->longText('clean_tweet')->nullable()->change();
             $table->timestamps();
         });
     }

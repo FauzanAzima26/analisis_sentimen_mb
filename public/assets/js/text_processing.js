@@ -31,7 +31,7 @@ $(document).ready(function () {
             },
 
             {
-                data: "tweet_preprocessing",
+                data: "clean_tweet",
                 defaultContent: "-",
             },
         ],
@@ -43,50 +43,71 @@ $(document).ready(function () {
         },
     });
 
-    // RUN PREPROCESSING
     $("#btnPreprocessing").click(function () {
-        $.ajax({
-            url: processUrl,
+        Swal.fire({
+            title: "Jalankan preprocessing?",
+            text: "Semua data akan diproses",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, proses",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: processUrl,
 
-            type: "POST",
+                    type: "POST",
 
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr("content"),
+                    },
 
-            beforeSend: function () {
-                $("#btnPreprocessing").prop("disabled", true).html(`
-                        <span class="spinner-border spinner-border-sm me-1"></span>
-                        Processing...
-                    `);
-            },
+                    beforeSend: function () {
+                        $("#btnPreprocessing").prop("disabled", true).html(`
+                            <span class="spinner-border spinner-border-sm me-1"></span>
+                            Processing...
+                        `);
 
-            success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Berhasil",
-                    text: response.message,
-                    timer: 2000,
-                    showConfirmButton: false,
+                        Swal.fire({
+                            title: "Processing...",
+                            text: "Sedang menjalankan preprocessing",
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                    },
+
+                    success: function (response) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false,
+                        });
+
+                        dataTable.ajax.reload();
+                    },
+
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal",
+                            text: "Preprocessing gagal",
+                        });
+                    },
+
+                    complete: function () {
+                        $("#btnPreprocessing").prop("disabled", false).html(`
+                            <i class="ti ti-player-play me-1"></i>
+                            Run Preprocessing
+                        `);
+                    },
                 });
-
-                dataTable.ajax.reload();
-            },
-
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Gagal",
-                    text: "Preprocessing gagal",
-                });
-            },
-
-            complete: function () {
-                $("#btnPreprocessing").prop("disabled", false).html(`
-                        <i class="ti ti-player-play me-1"></i>
-                        Run Preprocessing
-                    `);
-            },
+            }
         });
     });
 });

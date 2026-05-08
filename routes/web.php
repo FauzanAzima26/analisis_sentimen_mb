@@ -22,6 +22,8 @@ Route::get('/text-processing', [TextProcessingController::class, 'index'])
     ->name('text-processing.index');
 Route::get('/text-processing/data', [TextProcessingController::class, 'data'])
     ->name('text-processing.data');
+Route::post('/run-preprocessing', [TextProcessingController::class, 'run'])
+    ->name('run.preprocessing');
 
 Route::get('/tfidf', [TFIDFController::class, 'index'])
     ->name('tfidf.index');

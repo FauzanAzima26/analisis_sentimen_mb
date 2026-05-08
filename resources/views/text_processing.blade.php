@@ -27,10 +27,10 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive text-nowrap px-3 pb-3">
+            <div class="table-responsive px-3 pb-3">
 
                 <table id="preprocessing" class="table table-bordered table-hover" data-url="{{ route('dataset.data') }}"
-                    data-process-url="{{ route('text-processing.data') }}">
+                    data-process-url="{{ route('run.preprocessing') }}">
 
                     <thead class="table-light">
 
