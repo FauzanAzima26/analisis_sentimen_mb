@@ -1,0 +1,95 @@
+@extends('layout.main')
+
+@section('content')
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <div class="card">
+
+            {{-- HEADER --}}
+            <div class="card-header">
+
+                <h3 class="mb-1">
+                    Import Dataset CSV
+                </h3>
+
+                <p class="text-muted mb-0">
+                    Upload dataset tweet untuk analisis sentimen
+                </p>
+
+            </div>
+
+            {{-- FORM --}}
+            <div class="card-body">
+
+                <form id="formImport">
+
+                    @csrf
+
+                    <div class="row align-items-end g-3">
+
+                        {{-- FILE --}}
+                        <div class="col-md-5">
+
+                            <label class="form-label">
+                                File CSV
+                            </label>
+
+                            <input type="file" name="file" class="form-control" accept=".csv" required>
+
+                        </div>
+
+                        {{-- BUTTON --}}
+                        <div class="col-md-2">
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ti ti-upload me-1"></i>
+                                Import
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            {{-- TABLE --}}
+            <div class="table-responsive text-nowrap px-3 pb-3">
+
+                <table id="ImportDataset" class="table table-bordered" data-url="{{ route('dataset.data') }}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th width="5%" class="text-center">
+                                NO
+                            </th>
+
+                            <th>
+                                TWEET
+                            </th>
+
+                            <th width="15%" class="text-center">
+                                SENTIMEN
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @push('js')
+        <script src="{{ asset('assets/js/import_dataset.js') }}"></script>
+    @endpush
+@endsection
