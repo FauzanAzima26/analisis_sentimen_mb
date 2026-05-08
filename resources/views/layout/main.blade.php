@@ -131,8 +131,15 @@
 
     <!-- Vendors JS -->
 
+
+    <!-- Vendors JS -->
+    <script src="../../assets/vendor/libs/chartjs/chartjs.js"></script>
+
     <!-- Main JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="../../assets/js/main.js"></script>
+
+    <!-- Page JS -->
+    <script src="../../assets/js/charts-chartjs.js"></script>
 
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 

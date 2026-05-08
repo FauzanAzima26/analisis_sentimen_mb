@@ -46,26 +46,20 @@
                 <div data-i18n="Page 2">Text Processing</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="page-2.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-app-window"></i>
-                <div data-i18n="Page 2">Labeling</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="page-2.html" class="menu-link">
+        <li class="menu-item {{request()->routeIs('tfidf.*') ? 'active' : ''}}">
+            <a href="{{route('tfidf.index')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>
                 <div data-i18n="Page 2">TF-IDF</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="page-2.html" class="menu-link">
+        <li class="menu-item {{request()->routeIs('model-performance.*') ? 'active' : ''}}">
+            <a href="{{route('model-performance.index')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>
                 <div data-i18n="Page 2">Model Performance</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="page-2.html" class="menu-link">
+        <li class="menu-item {{request()->routeIs('testing-predik.*') ? 'active' : ''}}">
+            <a href="{{route('testing-predik.index')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>
                 <div data-i18n="Page 2">Performance Data Testing</div>
             </a>

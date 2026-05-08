@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportDatasetController;
+use App\Http\Controllers\ModelPerformanceController;
+use App\Http\Controllers\TestingPredikController;
 use App\Http\Controllers\TextProcessingController;
+use App\Http\Controllers\TFIDFController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,3 +22,14 @@ Route::get('/text-processing', [TextProcessingController::class, 'index'])
     ->name('text-processing.index');
 Route::get('/text-processing/data', [TextProcessingController::class, 'data'])
     ->name('text-processing.data');
+
+Route::get('/tfidf', [TFIDFController::class, 'index'])
+    ->name('tfidf.index');
+Route::get('/tfidf/data', [TFIDFController::class, 'data'])
+    ->name('tfidf.data');
+
+Route::get('/model-performance', [ModelPerformanceController::class, 'index'])
+    ->name('model-performance.index');
+
+Route::get('/testing-predik', [TestingPredikController::class, 'index'])
+    ->name('testing-predik.index');
