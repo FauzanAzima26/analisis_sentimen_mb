@@ -24,7 +24,7 @@
                     <button type="button" id="btnPreprocessing" class="btn btn-primary">
 
                         <i class="ti ti-player-play me-1"></i>
-                        Run Preprocessing
+                        Run Prediction
                     </button>
 
                     {{-- BUTTON RESET --}}

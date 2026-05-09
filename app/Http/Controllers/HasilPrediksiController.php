@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ModelPerformanceController extends Controller
+class HasilPrediksiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('model-performance');
+        return view('hasil_prediksi');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ImportDataset;
+use App\Models\TfidfResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -105,12 +106,22 @@ class TextProcessingController extends Controller
             ]);
         }
 
+        $tfidfData = $tfidfResponse->json()['data'] ?? [];
+
+        foreach ($tfidfData as $item) {
+
+            TfidfResult::updateOrCreate(
+                ['term' => $item['term']],
+                ['tfidf' => $item['tfidf']]
+            );
+        }
+
         // =========================
         // 5. RETURN HASIL
         // =========================
         return response()->json([
             'message' => 'Processing selesai',
-            'tfidf' => $tfidfResponse->json()
+            'tfidf_saved' => count($tfidfData)
         ]);
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HasilPrediksiController;
 use App\Http\Controllers\ImportDatasetController;
 use App\Http\Controllers\ModelPerformanceController;
 use App\Http\Controllers\TestingPredikController;
@@ -34,8 +35,8 @@ Route::get('/tfidf/data', [TFIDFController::class, 'data'])
 Route::post('/tfidf/process', [TFIDFController::class, 'tfidf'])
     ->name('tfidf.process');
 
-Route::get('/model-performance', [ModelPerformanceController::class, 'index'])
-    ->name('model-performance.index');
+Route::get('/hasil-prediksi', [HasilPrediksiController::class, 'index'])
+    ->name('hasil-prediksi.index');
 
 Route::get('/testing-predik', [TestingPredikController::class, 'index'])
     ->name('testing-predik.index');

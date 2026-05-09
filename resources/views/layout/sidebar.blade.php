@@ -52,16 +52,10 @@
                 <div data-i18n="Page 2">TF-IDF</div>
             </a>
         </li>
-        <li class="menu-item {{request()->routeIs('model-performance.*') ? 'active' : ''}}">
-            <a href="{{route('model-performance.index')}}" class="menu-link">
+        <li class="menu-item {{request()->routeIs('hasil-prediksi.*') ? 'active' : ''}}">
+            <a href="{{route('hasil-prediksi.index')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>
-                <div data-i18n="Page 2">Model Performance</div>
-            </a>
-        </li>
-        <li class="menu-item {{request()->routeIs('testing-predik.*') ? 'active' : ''}}">
-            <a href="{{route('testing-predik.index')}}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-app-window"></i>
-                <div data-i18n="Page 2">Performance Data Testing</div>
+                <div data-i18n="Page 2">Hasil Prediksi</div>
             </a>
         </li>
     </ul>
