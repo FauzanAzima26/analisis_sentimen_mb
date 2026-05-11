@@ -328,136 +328,150 @@
     // Radar Chart
     // --------------------------------------------------------------------
 
-    const radarChart = document.getElementById("radarChart");
+    // const radarChart = document.getElementById("radarChart");
 
-    if (radarChart) {
-        // Gradient SVM
-        const gradientBlue = radarChart
-            .getContext("2d")
-            .createLinearGradient(0, 0, 0, 150);
+    // if (radarChart) {
+    //     // Gradient SVM
+    //     const gradientBlue = radarChart
+    //         .getContext("2d")
+    //         .createLinearGradient(0, 0, 0, 150);
 
-        gradientBlue.addColorStop(0, "rgba(85, 85, 255, 0.9)");
-        gradientBlue.addColorStop(1, "rgba(151, 135, 255, 0.8)");
+    //     gradientBlue.addColorStop(0, "rgba(85, 85, 255, 0.9)");
+    //     gradientBlue.addColorStop(1, "rgba(151, 135, 255, 0.8)");
 
-        // Gradient SVM + SMOTE
-        const gradientRed = radarChart
-            .getContext("2d")
-            .createLinearGradient(0, 0, 0, 150);
+    //     // Gradient SVM + SMOTE
+    //     const gradientRed = radarChart
+    //         .getContext("2d")
+    //         .createLinearGradient(0, 0, 0, 150);
 
-        gradientRed.addColorStop(0, "rgba(255, 85, 184, 0.9)");
-        gradientRed.addColorStop(1, "rgba(255, 135, 135, 0.8)");
+    //     gradientRed.addColorStop(0, "rgba(255, 85, 184, 0.9)");
+    //     gradientRed.addColorStop(1, "rgba(255, 135, 135, 0.8)");
 
-        const radarChartVar = new Chart(radarChart, {
-            type: "radar",
+    //     const radarChartVar = new Chart(radarChart, {
+    //         type: "radar",
 
-            data: {
-                labels: ["Accuracy", "Precision", "Recall", "F1-Score"],
+    //         data: {
+    //             labels: ["Accuracy", "Precision", "Recall", "F1-Score"],
 
-                datasets: [
-                    {
-                        label: "SVM",
+    //             datasets: [
+    //                 {
+    //                     label: "SVM",
 
-                        data: [89.21, 88, 87, 87],
+    //                     data: [
+    //                         svmMetrics.accuracy,
+    //                         svmMetrics.precision,
+    //                         svmMetrics.recall,
+    //                         svmMetrics.f1,
+    //                     ],
 
-                        fill: true,
+    //                     fill: true,
 
-                        pointStyle: "circle",
+    //                     pointStyle: "circle",
 
-                        backgroundColor: gradientBlue,
+    //                     backgroundColor: gradientBlue,
 
-                        borderColor: "transparent",
+    //                     borderColor: "#696cff",
 
-                        pointBorderColor: "transparent",
-                    },
+    //                     pointBackgroundColor: "#696cff",
 
-                    {
-                        label: "SVM + SMOTE",
+    //                     pointBorderColor: "#fff",
+    //                 },
 
-                        data: [96.49, 96, 95, 95],
+    //                 {
+    //                     label: "SVM + SMOTE",
 
-                        fill: true,
+    //                     data: [
+    //                         smoteMetrics.accuracy,
+    //                         smoteMetrics.precision,
+    //                         smoteMetrics.recall,
+    //                         smoteMetrics.f1,
+    //                     ],
 
-                        pointStyle: "circle",
+    //                     fill: true,
 
-                        backgroundColor: gradientRed,
+    //                     pointStyle: "circle",
 
-                        borderColor: "transparent",
+    //                     backgroundColor: gradientRed,
 
-                        pointBorderColor: "transparent",
-                    },
-                ],
-            },
+    //                     borderColor: "#ff3e97",
 
-            options: {
-                responsive: true,
+    //                     pointBackgroundColor: "#ff3e97",
 
-                maintainAspectRatio: false,
+    //                     pointBorderColor: "#fff",
+    //                 },
+    //             ],
+    //         },
 
-                animation: {
-                    duration: 500,
-                },
+    //         options: {
+    //             responsive: true,
 
-                scales: {
-                    r: {
-                        min: 0,
+    //             maintainAspectRatio: false,
 
-                        max: 100,
+    //             animation: {
+    //                 duration: 500,
+    //             },
 
-                        ticks: {
-                            stepSize: 20,
+    //             scales: {
+    //                 r: {
+    //                     min: 0,
 
-                            color: labelColor,
+    //                     max: 100,
 
-                            backdropColor: "transparent",
-                        },
+    //                     ticks: {
+    //                         stepSize: 20,
 
-                        grid: {
-                            color: borderColor,
-                        },
+    //                         color: labelColor,
 
-                        angleLines: {
-                            color: borderColor,
-                        },
+    //                         backdropColor: "transparent",
+    //                     },
 
-                        pointLabels: {
-                            color: labelColor,
-                            font: {
-                                size: 13,
-                            },
-                        },
-                    },
-                },
+    //                     grid: {
+    //                         color: borderColor,
+    //                     },
 
-                plugins: {
-                    legend: {
-                        rtl: isRtl,
+    //                     angleLines: {
+    //                         color: borderColor,
+    //                     },
 
-                        position: "top",
+    //                     pointLabels: {
+    //                         color: labelColor,
+    //                         font: {
+    //                             size: 13,
+    //                         },
+    //                     },
+    //                 },
+    //             },
 
-                        labels: {
-                            padding: 25,
+    //             plugins: {
+    //                 legend: {
+    //                     rtl: isRtl,
 
-                            color: legendColor,
-                        },
-                    },
+    //                     position: "top",
 
-                    tooltip: {
-                        rtl: isRtl,
+    //                     labels: {
+    //                         padding: 25,
 
-                        backgroundColor: cardColor,
+    //                         color: legendColor,
+    //                     },
+    //                 },
 
-                        titleColor: headingColor,
+    //                 tooltip: {
+    //                     rtl: isRtl,
 
-                        bodyColor: legendColor,
+    //                     backgroundColor: cardColor,
 
-                        borderWidth: 1,
+    //                     titleColor: headingColor,
 
-                        borderColor: borderColor,
-                    },
-                },
-            },
-        });
-    }
+    //                     bodyColor: legendColor,
+
+    //                     borderWidth: 1,
+
+    //                     borderColor: borderColor,
+    //                 },
+    //             },
+    //         },
+    //     });
+    // }
 
     // Polar Chart
     // --------------------------------------------------------------------

@@ -14,7 +14,7 @@ $(document).ready(function () {
         ajax: {
             url: url,
             type: "GET",
-            dataSrc: "",
+            dataSrc: "data",
         },
 
         columns: [

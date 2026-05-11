@@ -23,9 +23,7 @@
             {{-- TABLE --}}
             <div class="table-responsive px-3 pb-3">
 
-                <table id="prediction" class="table table-bordered table-hover" data-url="{{ route('dataset.data') }}"
-                    data-process-url="{{ route('text-processing.processAll') }}"
-                    data-reset-url="{{ route('preprocessing.reset') }}">
+                <table id="prediction" class="table table-bordered table-hover" data-url="{{ route('hasil-prediksi.data') }}">
 
                     <thead class="table-light">
 

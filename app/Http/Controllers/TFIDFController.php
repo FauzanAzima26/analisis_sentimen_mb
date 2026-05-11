@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ImportDataset;
+use App\Models\PredictionResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -21,26 +21,27 @@ class TFIDFController extends Controller
         $response = Http::timeout(60)->post(
             'http://127.0.0.1:5000/tfidf',
             [
-                'texts' => ImportDataset::whereNotNull('clean_tweet')
+                'texts' => PredictionResult::whereNotNull('clean_tweet')
                     ->pluck('clean_tweet')
                     ->toArray()
             ]
         );
 
         if ($response->failed()) {
+
             return response()->json([
-                'error' => $response->body()
+                'data' => []
             ]);
         }
 
-        return response()->json(
-            $response->json()['data'] ?? []
-        );
+        return response()->json([
+            'data' => $response->json()['data'] ?? []
+        ]);
     }
 
     public function tfidf()
     {
-        $texts = ImportDataset::whereNotNull('clean_tweet')
+        $texts = PredictionResult::whereNotNull('clean_tweet')
             ->pluck('clean_tweet')
             ->toArray();
 

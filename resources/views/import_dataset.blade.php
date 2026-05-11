@@ -41,7 +41,7 @@
                         </div>
 
                         {{-- BUTTON --}}
-                        <div class="col-md-2">
+                        <div class="col-md-2 mb-5">
 
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="ti ti-upload me-1"></i>

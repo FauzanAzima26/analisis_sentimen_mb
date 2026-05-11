@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\ImportDataset;
+use App\Models\PredictionResult;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -15,9 +15,8 @@ class DatasetImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        return new ImportDataset([
+        return new PredictionResult([
             'tweet' => $row['tweet'] ?? null,
-            'sentimen' => $row['sentimen'] ?? null,
         ]);
     }
 }

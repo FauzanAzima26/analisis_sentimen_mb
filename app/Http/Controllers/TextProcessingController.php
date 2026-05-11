@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ImportDataset;
-use App\Models\TfidfResult;
+use App\Models\PredictionResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -19,7 +18,7 @@ class TextProcessingController extends Controller
 
     public function data()
     {
-        $data = ImportDataset::select(
+        $data = PredictionResult::select(
             'tweet',
             'clean_tweet'
         )->latest()->get();
@@ -29,10 +28,10 @@ class TextProcessingController extends Controller
 
     public function reset()
     {
-        ImportDataset::truncate();
+        PredictionResult::truncate();
 
         return response()->json([
-            'message' => 'Semua data berhasil dihapus'
+            'message' => 'Data prediksi berhasil direset'
         ]);
     }
 
@@ -41,16 +40,17 @@ class TextProcessingController extends Controller
         // =========================
         // 1. AMBIL DATA RAW
         // =========================
-        $datasets = ImportDataset::whereNotNull('tweet')->get();
+        $datasets = PredictionResult::whereNotNull('tweet')->get();
 
         if ($datasets->isEmpty()) {
+
             return response()->json([
                 'message' => 'Data kosong'
             ]);
         }
 
         // =========================
-        // 2. PREPROCESSING + SIMPAN
+        // 2. PREPROCESSING
         // =========================
         foreach ($datasets as $data) {
 
@@ -69,10 +69,12 @@ class TextProcessingController extends Controller
 
                 $result = $response->json();
 
-                $data->clean_tweet = $result['clean_text'] ?? null;
+                $data->clean_tweet =
+                    $result['clean_text'] ?? null;
 
                 $data->save();
             } catch (\Exception $e) {
+
                 continue;
             }
         }
@@ -80,18 +82,21 @@ class TextProcessingController extends Controller
         // =========================
         // 3. AMBIL CLEAN TEXT
         // =========================
-        $texts = ImportDataset::whereNotNull('clean_tweet')
-            ->pluck('clean_tweet')
-            ->toArray();
+        $cleanDatasets = PredictionResult::whereNotNull('clean_tweet')->get();
 
-        if (empty($texts)) {
+        if ($cleanDatasets->isEmpty()) {
+
             return response()->json([
-                'message' => 'Tidak ada data clean_tweet'
+                'message' => 'Tidak ada clean_tweet'
             ]);
         }
 
+        $texts = $cleanDatasets
+            ->pluck('clean_tweet')
+            ->toArray();
+
         // =========================
-        // 4. HITUNG TF-IDF (FASTAPI)
+        // 4. TF-IDF
         // =========================
         $tfidfResponse = Http::timeout(60)->post(
             'http://127.0.0.1:5000/tfidf',
@@ -101,26 +106,58 @@ class TextProcessingController extends Controller
         );
 
         if ($tfidfResponse->failed()) {
+
             return response()->json([
                 'message' => 'Gagal hitung TF-IDF'
             ]);
         }
 
-        $tfidfData = $tfidfResponse->json()['data'] ?? [];
+        $tfidfData =
+            $tfidfResponse->json()['data'] ?? [];
 
-        foreach ($tfidfData as $item) {
+        // =========================
+        // 6. PREDICTION
+        // =========================
+        foreach ($cleanDatasets as $data) {
 
-            TfidfResult::updateOrCreate(
-                ['term' => $item['term']],
-                ['tfidf' => $item['tfidf']]
-            );
+            try {
+
+                $predictionResponse = Http::timeout(30)->post(
+                    'http://127.0.0.1:5000/predict',
+                    [
+                        'text' => $data->clean_tweet
+                    ]
+                );
+
+                if ($predictionResponse->failed()) {
+                    continue;
+                }
+
+                $predictionResult =
+                    $predictionResponse->json();
+
+                // =========================
+                // SIMPAN HASIL PREDIKSI
+                // =========================
+                $data->sentimen_svm =
+                    $predictionResult['svm'] ?? null;
+
+                $data->sentimen_smote =
+                    $predictionResult['svm_dan_smote'] ?? null;
+
+                $data->save();
+            } catch (\Exception $e) {
+
+                continue;
+            }
         }
 
         // =========================
-        // 5. RETURN HASIL
+        // 7. RETURN
         // =========================
         return response()->json([
-            'message' => 'Processing selesai',
+            'message' => 'Preprocessing, TF-IDF, dan Prediction berhasil',
+            'total_data' => $datasets->count(),
             'tfidf_saved' => count($tfidfData)
         ]);
     }

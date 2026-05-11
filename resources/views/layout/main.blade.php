@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
 
@@ -133,12 +134,14 @@
 
 
     <!-- Vendors JS -->
+    <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
     <script src="../../assets/vendor/libs/chartjs/chartjs.js"></script>
 
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>
 
     <!-- Page JS -->
+    <script src="../../assets/js/charts-apex.js"></script>
     <script src="../../assets/js/charts-chartjs.js"></script>
 
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>

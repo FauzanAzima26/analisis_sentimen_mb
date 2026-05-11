@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('import_datasets', function (Blueprint $table) {
+        Schema::create('prediction_results', function (Blueprint $table) {
+
             $table->id();
+
+            $table->text('tweet');
+
+            $table->text('clean_tweet')->nullable();
+
+            $table->string('sentimen_svm')->nullable();
+
+            $table->string('sentimen_smote')->nullable();
+
             $table->timestamps();
         });
     }
@@ -22,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('import_datasets');
+        //
     }
 };

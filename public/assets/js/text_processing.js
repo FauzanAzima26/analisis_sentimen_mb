@@ -53,29 +53,62 @@ $(document).ready(function () {
 
     $("#btnPreprocessing").click(function () {
         $.ajax({
-            url: "/text-processing/process-all",
+            url: processUrl,
+
             type: "POST",
+
             data: {
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },
 
             beforeSend: function () {
+                $("#btnPreprocessing").prop("disabled", true).html(`
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                        Processing...
+                    `);
+
                 Swal.fire({
                     title: "Processing...",
-                    didOpen: () => Swal.showLoading(),
+
+                    text: "Preprocessing, TF-IDF, dan Prediction sedang berjalan",
+
+                    allowOutsideClick: false,
+
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
                 });
             },
 
-            success: function (res) {
-                console.log(res);
-
+            success: function (response) {
                 Swal.fire({
                     icon: "success",
-                    title: "Selesai",
-                    text: res.message,
+
+                    title: "Berhasil",
+
+                    text: response.message,
                 });
 
                 dataTable.ajax.reload();
+            },
+
+            error: function (xhr) {
+                console.log(xhr.responseText);
+
+                Swal.fire({
+                    icon: "error",
+
+                    title: "Gagal",
+
+                    text: "Process gagal dijalankan",
+                });
+            },
+
+            complete: function () {
+                $("#btnPreprocessing").prop("disabled", false).html(`
+                        <i class="ti ti-player-play me-1"></i>
+                        Process All
+                    `);
             },
         });
     });

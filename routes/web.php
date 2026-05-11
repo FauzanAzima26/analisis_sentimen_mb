@@ -7,6 +7,7 @@ use App\Http\Controllers\ModelPerformanceController;
 use App\Http\Controllers\TestingPredikController;
 use App\Http\Controllers\TextProcessingController;
 use App\Http\Controllers\TFIDFController;
+use App\Models\ImportDataset;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,6 +38,9 @@ Route::post('/tfidf/process', [TFIDFController::class, 'tfidf'])
 
 Route::get('/hasil-prediksi', [HasilPrediksiController::class, 'index'])
     ->name('hasil-prediksi.index');
+Route::get('/hasil-prediksi/data', [HasilPrediksiController::class, 'data'])
+    ->name('hasil-prediksi.data');
+Route::post('/hasil-prediksi/process', [HasilPrediksiController::class, 'processPrediction'])
+    ->name('hasil-prediksi.process');
 
-Route::get('/testing-predik', [TestingPredikController::class, 'index'])
-    ->name('testing-predik.index');
+Route::post('/sentiment/predict', [ImportDatasetController::class, 'predictSingle']);

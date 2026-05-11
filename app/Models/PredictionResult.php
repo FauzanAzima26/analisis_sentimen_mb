@@ -4,15 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ImportDataset extends Model
+class PredictionResult extends Model
 {
-    protected $table = 'datasets';
+    protected $table = 'prediction_results';
 
     protected $fillable = [
         'tweet',
-        'sentiment',
         'clean_tweet',
-        'sentiment_svm',
-        'sentiment_smote'
+        'sentimen_svm',
+        'sentimen_smote'
     ];
 }

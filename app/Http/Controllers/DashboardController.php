@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PredictionResult;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,7 +12,57 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        // TOTAL DATA
+        $total = PredictionResult::count();
+
+        // =========================
+        // SVM
+        // =========================
+        $svm_positif = PredictionResult::where('sentimen_svm', 'positif')->count();
+        $svm_negatif = PredictionResult::where('sentimen_svm', 'negatif')->count();
+        $svm_netral  = PredictionResult::where('sentimen_svm', 'netral')->count();
+
+        // =========================
+        // SMOTE
+        // =========================
+        $smote_positif = PredictionResult::where('sentimen_smote', 'positif')->count();
+        $smote_negatif = PredictionResult::where('sentimen_smote', 'negatif')->count();
+        $smote_netral  = PredictionResult::where('sentimen_smote', 'netral')->count();
+
+        // =========================
+        // SVM METRICS
+        // =========================
+        $svmMetrics = [
+            'accuracy' => 82.68,
+            'precision' => 84,
+            'recall' => 80,
+            'f1_score' => 82
+        ];
+
+        // =========================
+        // SVM + SMOTE METRICS
+        // =========================
+        $smoteMetrics = [
+            'accuracy' => 84.51,
+            'precision' => 85,
+            'recall' => 83,
+            'f1_score' => 84
+        ];
+
+        return view('dashboard', compact(
+            'total',
+
+            'svm_positif',
+            'svm_negatif',
+            'svm_netral',
+
+            'smote_positif',
+            'smote_negatif',
+            'smote_netral',
+
+            'svmMetrics',
+            'smoteMetrics'
+        ));
     }
 
     /**
