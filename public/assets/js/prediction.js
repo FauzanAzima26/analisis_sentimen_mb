@@ -4,6 +4,8 @@ $(document).ready(function () {
 
         serverSide: false,
 
+        autoWidth: false,
+
         ajax: {
             url: $("#prediction").data("url"),
             type: "GET",
@@ -74,5 +76,10 @@ $(document).ready(function () {
                 },
             },
         ],
+        initComplete: function () {
+            $(".dataTables_filter").addClass("mb-3 me-3");
+
+            $(".dataTables_length").addClass("mb-3 ms-3 mt-2");
+        },
     });
 });

@@ -57,6 +57,8 @@ $(document).ready(function () {
 
             type: "POST",
 
+            timeout: 0,
+
             data: {
                 _token: $('meta[name="csrf-token"]').attr("content"),
             },

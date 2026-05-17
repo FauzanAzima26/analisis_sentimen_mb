@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PredictionResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TextProcessingController extends Controller
 {
@@ -37,6 +38,8 @@ class TextProcessingController extends Controller
 
     public function processAll()
     {
+        set_time_limit(0);
+
         // =========================
         // 1. AMBIL DATA RAW
         // =========================
@@ -50,7 +53,78 @@ class TextProcessingController extends Controller
         }
 
         // =========================
-        // 2. PREPROCESSING
+        // 2. REMOVE DUPLICATE VIA FASTAPI
+        // =========================
+        $allUniqueTexts = [];
+
+        $datasets
+            ->pluck('tweet')
+            ->chunk(500)
+            ->each(function ($chunk) use (&$allUniqueTexts) {
+
+                try {
+
+                    $response = Http::timeout(300)->post(
+                        'http://127.0.0.1:5000/remove-duplicate',
+                        [
+                            'texts' => $chunk->values()->toArray()
+                        ]
+                    );
+
+                    if ($response->successful()) {
+
+                        $result = $response->json();
+
+                        $allUniqueTexts = array_merge(
+                            $allUniqueTexts,
+                            $result['data'] ?? []
+                        );
+                    }
+                } catch (\Exception $e) {
+
+                    Log::error($e->getMessage());
+                }
+            });
+
+        // unique final
+        $uniqueTexts = array_unique($allUniqueTexts);
+
+
+        // =========================
+        // HAPUS DATA DUPLIKAT DI DATABASE
+        // =========================
+        $allTweets = [];
+
+        foreach ($datasets as $data) {
+
+            $tweet = trim($data->tweet);
+
+            if (!in_array($tweet, $uniqueTexts)) {
+
+                $data->delete();
+
+                continue;
+            }
+
+            if (in_array($tweet, $allTweets)) {
+
+                $data->delete();
+
+                continue;
+            }
+
+            $allTweets[] = $tweet;
+        }
+
+        // reload data
+        $datasets = PredictionResult::whereNotNull('tweet')->get();
+
+        Log::info(
+            'Jumlah data setelah remove duplicate: ' . $datasets->count()
+        );
+
+        // =========================
+        // 3. PREPROCESSING
         // =========================
         foreach ($datasets as $data) {
 
@@ -80,7 +154,7 @@ class TextProcessingController extends Controller
         }
 
         // =========================
-        // 3. AMBIL CLEAN TEXT
+        // 4. AMBIL CLEAN TEXT
         // =========================
         $cleanDatasets = PredictionResult::whereNotNull('clean_tweet')->get();
 
@@ -96,7 +170,7 @@ class TextProcessingController extends Controller
             ->toArray();
 
         // =========================
-        // 4. TF-IDF
+        // 5. TF-IDF
         // =========================
         $tfidfResponse = Http::timeout(60)->post(
             'http://127.0.0.1:5000/tfidf',
@@ -136,9 +210,6 @@ class TextProcessingController extends Controller
                 $predictionResult =
                     $predictionResponse->json();
 
-                // =========================
-                // SIMPAN HASIL PREDIKSI
-                // =========================
                 $data->sentimen_svm =
                     $predictionResult['svm'] ?? null;
 
@@ -158,6 +229,7 @@ class TextProcessingController extends Controller
         return response()->json([
             'message' => 'Preprocessing, TF-IDF, dan Prediction berhasil',
             'total_data' => $datasets->count(),
+            'duplicate_removed' => count($texts) - count($uniqueTexts),
             'tfidf_saved' => count($tfidfData)
         ]);
     }

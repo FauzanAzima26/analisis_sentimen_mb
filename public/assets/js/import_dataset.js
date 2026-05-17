@@ -71,11 +71,19 @@ $(document).ready(function () {
             },
 
             error: function (xhr) {
+                console.log(xhr.responseJSON);
+
+                let message = "Gagal import dataset";
+
+                if (xhr.responseJSON?.message) {
+                    message = xhr.responseJSON.message;
+                }
+
                 $("#alertMessage").html(`
-                    <div class="alert alert-danger alert-dismissible">
-                        Gagal import dataset
-                    </div>
-                `);
+        <div class="alert alert-danger alert-dismissible">
+            ${message}
+        </div>
+    `);
             },
 
             complete: function () {

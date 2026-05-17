@@ -12,6 +12,7 @@
     <title>Page 1 - Starter Kit | Vuexy - Bootstrap Admin Template</title>
 
     <meta name="description" content="" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />

@@ -25,13 +25,27 @@ class ImportDatasetController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:csv,xlsx,xls'
+            'file' => 'required|file'
         ]);
 
+        // AMBIL FILE
+        $file = $request->file('file');
+
+        // CEK EXTENSION
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (!in_array($extension, ['csv', 'xlsx', 'xls'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Format file tidak didukung'
+            ], 422);
+        }
+
         try {
+
             Excel::import(
                 new DatasetImport,
-                $request->file('file')
+                $file
             );
 
             return response()->json([
@@ -39,6 +53,7 @@ class ImportDatasetController extends Controller
                 'message' => 'Dataset berhasil diimport'
             ]);
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
                 'message' => 'Import gagal',
